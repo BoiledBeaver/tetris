@@ -1,4 +1,5 @@
 import { moveTetrominoLeft, moveTetrominoRight, rotateTetromino } from './gameBoard.js';
+import { hardDropTetromino } from './gameBoard.js';
 
 let keysPressed = {};
 let isDownPressed = false;
@@ -35,12 +36,16 @@ export function processInput(key, activeTetromino) {
   switch (key) {
     case 'ArrowLeft':
       moveTetrominoLeft(activeTetromino);
-      break;
+      return false;
     case 'ArrowRight':
       moveTetrominoRight(activeTetromino);
-      break;
+      return false;
     case 'ArrowUp':
       rotateTetromino(activeTetromino);
-      break;
+      return false;
+    case ' ':
+      return hardDropTetromino(activeTetromino);
+    default:
+      return false;
   }
 }

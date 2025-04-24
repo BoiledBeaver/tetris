@@ -1,5 +1,5 @@
 import { setBackgroundForLevel, setInitialBackground, preloadBackgrounds } from './background.js';
-import { startGame as startGameBoard, restartGame, moveTetrominoDown, moveTetrominoLeft, moveTetrominoRight, rotateTetromino, drawGameBoard, drawTetromino, drawNextTetromino, initNextBoard } from './gameBoard.js';
+import { getBoard, startGame as startGameBoard, restartGame, moveTetrominoDown, moveTetrominoLeft, moveTetrominoRight, rotateTetromino, getShadowTetromino, drawTetromino, drawGameBoard, drawNextTetromino, initNextBoard } from './gameBoard.js';
 import { handleInputSetup, processInput } from './inputHandler.js';
 import { increaseScore, levelUp, startGame as startScore, stopGame, resetGame } from './score.js';
 import { startTimer, stopTimer, resetTimer } from './timer.js';
@@ -82,7 +82,12 @@ function gameLoop(timestamp) {
 function drawGame() {
   drawGameBoard();
   if (activeTetromino) drawTetromino(activeTetromino);
-  // Score and timer UI updated in their own modules
+  
+  const board = getBoard();
+  const shadowTetromino = getShadowTetromino(activeTetromino, board);
+
+  drawTetromino(shadowTetromino, true);
+  drawTetromino(activeTetromino);
 }
 
 function startGameFlow() {
@@ -131,8 +136,13 @@ function onKeyDown(e) {
   if (e.key === 'Escape') {
     togglePause();
   } else {
-    processInput(e.key, activeTetromino);
+    const locked = processInput(e.key, activeTetromino);
+    if (locked) {
+        activeTetromino = nextTetromino;
+        nextTetromino = createRandomTetromino();
+        drawNextTetromino(nextTetromino);
   }
+}
 }
 
 function onKeyUp(e) {

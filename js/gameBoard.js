@@ -7,7 +7,7 @@ const COLS = 10;
 
 let board = Array.from({ length: ROWS }, () => Array(COLS).fill(0));
 
-export function drawTetromino(tetromino) {
+export function drawTetromino(tetromino, isShadow = false) {
     if (!tetromino) return;
     const gameBoardElement = document.getElementById('game-board');
     const cells = gameBoardElement.children;
@@ -21,15 +21,39 @@ export function drawTetromino(tetromino) {
             const index = boardY * COLS + boardX;
             const cellDiv = cells[index];
   
-            // Add CSS class for shadows and outlines
             cellDiv.classList.add('tetromino-block');
   
-            // Set the background color dynamically from the tetromino's color
-            cellDiv.style.backgroundColor = tetromino.color;
+            if (isShadow) {
+              // Use translucent color for shadow
+              cellDiv.style.backgroundColor = hexToRGBA(tetromino.color, 0.1);
+            } else {
+              // Normal solid color
+              cellDiv.style.backgroundColor = tetromino.color;
+            }
           }
         }
       });
     });
+  }
+  
+  // Helper to convert hex color to RGBA with alpha
+  function hexToRGBA(hex, alpha) {
+    let r = 0, g = 0, b = 0;
+  
+    // Remove '#' if present
+    if (hex[0] === '#') hex = hex.slice(1);
+  
+    if (hex.length === 3) {
+      r = parseInt(hex[0] + hex[0], 16);
+      g = parseInt(hex[1] + hex[1], 16);
+      b = parseInt(hex[2] + hex[2], 16);
+    } else if (hex.length === 6) {
+      r = parseInt(hex.slice(0, 2), 16);
+      g = parseInt(hex.slice(2, 4), 16);
+      b = parseInt(hex.slice(4, 6), 16);
+    }
+  
+    return `rgba(${r},${g},${b},${alpha})`;
   }
 
   export function drawNextTetromino(tetromino) {
@@ -61,7 +85,7 @@ export function drawTetromino(tetromino) {
       });
     });
   }
-
+  
 export function drawGameBoard() {
     const gameBoardElement = document.getElementById('game-board');
     gameBoardElement.innerHTML = '';
@@ -100,6 +124,21 @@ export function drawGameBoard() {
     }
   }
 
+  export function getShadowTetromino(activeTetromino, board) {
+    const shadow = {
+      shape: activeTetromino.shape,
+      color: activeTetromino.color,
+      x: activeTetromino.x,
+      y: activeTetromino.y,
+    };
+
+    while (!checkForCollision(shadow, board, 0, 1)) {
+      shadow.y += 1;
+    }
+  
+    return shadow;
+  }
+
 export function startGame(tetromino) {
   board = Array.from({ length: ROWS }, () => Array(COLS).fill(0));
 }
@@ -119,7 +158,6 @@ export function moveTetrominoDown(tetromino) {
   
       placeTetromino(tetromino);
       clearFullLines(board);
-      playSound('lineClear');
       return true; // locked
     }
   }
@@ -136,12 +174,24 @@ export function moveTetrominoRight(tetromino) {
   }
 }
 
+export function hardDropTetromino(tetromino) {
+    // Move tetromino down until collision occurs
+    while (!checkForCollision(tetromino, board, 0, 1)) {
+      tetromino.y += 1;
+    }
+  
+    placeTetromino(tetromino);
+    clearFullLines(board);
+  
+    return true;
+  }
+
 export function rotateTetromino(tetromino) {
   // Rotate shape matrix clockwise
   const rotatedShape = tetromino.shape[0].map((_, index) =>
     tetromino.shape.map(row => row[index]).reverse()
   );
-
+  
   // Check collision for rotated shape
   if (!checkForCollision({ ...tetromino, shape: rotatedShape }, board, 0, 0)) {
     tetromino.shape = rotatedShape;
