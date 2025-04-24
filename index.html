@@ -22,9 +22,17 @@
         <button id="muteButton">Mute</button>
       </div>
   
-      <div id="colorBlindToggleContainer" style="text-align:center; margin-top: 20px;">
-        <button id="colorBlindToggle">Toggle Color-Blind Mode</button>
+      <div id="colorBlindToggleContainer">
+        <label class="colorblind-switch">
+          <input type="checkbox" id="colorBlindToggle" />
+          <span class="slider">
+            <span class="slider-text on">ON</span>
+            <span class="slider-text off">OFF</span>
+          </span>
+        </label>
+        <span class="toggle-label">Color-Blind Mode</span>
       </div>
+
     </div>
 
     <div id="next-container">
@@ -44,7 +52,6 @@
             <ul>
                 <li>Speed scale with lvl </li>
                 <li>Change rotation logic of long boi</li>
-                <li>Color blindness trigger</li>
                 <li>Sound to proper function</li>
                 <li>Highscore</li>
                 <li>Instruction</li>
@@ -58,7 +65,7 @@
 
       </div>
     </main>
-    <footer> <b>IMPORTANT,  NOT FINAL</b> || PREVIEW ONLY - Alpha v.0.2 </footer>
+    <footer> <b>IMPORTANT,  NOT FINAL</b> || PREVIEW ONLY - Alpha v.0.3 </footer>
   <script type="module" src="js/app.js"></script>
 </body>
 </html>

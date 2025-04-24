@@ -5,7 +5,7 @@ import { increaseScore, levelUp, startGame as startScore, stopGame, resetGame } 
 import { startTimer, stopTimer, resetTimer } from './timer.js';
 import { showPauseMenu, hidePauseMenu } from './pauseMenu.js';
 import { startBackgroundMusic, stopBackgroundMusic, toggleMute } from './sound.js';
-import { createRandomTetromino, toggleColorBlindMode } from './tetromino.js';
+import { createRandomTetromino, toggleColorBlindMode, normalPalette, colorBlindPalette } from './tetromino.js';
 
 
 // Game state
@@ -79,6 +79,16 @@ function gameLoop(timestamp) {
     }
   }
 
+  function getColorForShape(shape) {
+    const palette = colorBlindMode ? colorBlindPalette : normalPalette;
+    for (const tetro of palette) {
+      if (JSON.stringify(tetro.shape) === JSON.stringify(shape)) {
+        return tetro.color;
+      }
+    }
+    return '#000';
+  }
+
 function drawGame() {
   drawGameBoard();
   if (activeTetromino) drawTetromino(activeTetromino);
@@ -89,6 +99,25 @@ function drawGame() {
   drawTetromino(shadowTetromino, true);
   drawTetromino(activeTetromino);
 }
+
+document.getElementById('colorBlindToggle').addEventListener('click', () => {
+    toggleColorBlindMode();
+  
+    if (activeTetromino) {
+      activeTetromino.color = getColorForShape(activeTetromino.shape);
+    }
+    if (nextTetromino) {
+      nextTetromino.color = getColorForShape(nextTetromino.shape);
+    }
+  
+    drawGame();
+    drawNextTetromino(nextTetromino);
+
+    const gameContainer = document.getElementById('game-container');
+    if (gameContainer) {
+      gameContainer.focus({ preventScroll: true });
+    }
+  });
 
 function startGameFlow() {
     resetGame();

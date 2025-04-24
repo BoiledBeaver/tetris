@@ -1,14 +1,14 @@
-const normalPalette = [
+export const normalPalette = [
     { shape: [[1,1,1],[0,1,0]], color: '#A3D8FF' }, // T
     { shape: [[1,1],[1,1]], color: '#fff1A8' },     // O
     { shape: [[1,1,0],[0,1,1]], color: '#D4A6FF' }, // S
     { shape: [[1,0,0],[1,1,1]], color: '#FFB6A6' }, // L
-    { shape: [[0,0,1],[1,1,1]], color: '#426a4a' }, // J
+    { shape: [[0,0,1],[1,1,1]], color: '#7FFFD4' }, // J
     { shape: [[0,1,1],[1,1,0]], color: '#A7D8A3' }, // Z
     { shape: [[1,1,1,1]], color: '#FF86C2' },       // I
   ];
   
-  const colorBlindPalette = [
+export const colorBlindPalette = [
     { shape: [[1,1,1],[0,1,0]], color: '#4CC9FF' },
     { shape: [[1,1],[1,1]], color: '#C6D000' },
     { shape: [[1,1,0],[0,1,1]], color: '#FF66B2' },
