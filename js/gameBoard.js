@@ -7,41 +7,6 @@ const COLS = 10;
 
 let board = Array.from({ length: ROWS }, () => Array(COLS).fill(0));
 
-/* export function drawGameBoard() {
-  const gameBoardElement = document.getElementById('game-board');
-  gameBoardElement.innerHTML = '';
-
-  for (let row = 0; row < ROWS; row++) {
-    for (let col = 0; col < COLS; col++) {
-      const cell = document.createElement('div');
-      cell.classList.add('game-cell');
-      cell.dataset.row = row;
-      cell.dataset.col = col;
-      cell.style.backgroundColor = board[row][col] ? getTetrominoColor(board[row][col]) : '';
-      gameBoardElement.appendChild(cell);
-    }
-  }
-}
-
-export function drawTetromino(tetromino) {
-  if (!tetromino) return;
-  const gameBoardElement = document.getElementById('game-board');
-  const cells = gameBoardElement.children;
-
-  tetromino.shape.forEach((row, y) => {
-    row.forEach((cell, x) => {
-      if (cell === 1) {
-        const boardX = tetromino.x + x;
-        const boardY = tetromino.y + y;
-        if (boardY >= 0 && boardY < ROWS && boardX >= 0 && boardX < COLS) {
-          const index = boardY * COLS + boardX;
-          cells[index].style.backgroundColor = tetromino.color;
-        }
-      }
-    });
-  });
-}
- */
 export function drawTetromino(tetromino) {
     if (!tetromino) return;
     const gameBoardElement = document.getElementById('game-board');
@@ -56,11 +21,41 @@ export function drawTetromino(tetromino) {
             const index = boardY * COLS + boardX;
             const cellDiv = cells[index];
   
-            // Add your CSS class for shadows and outlines
+            // Add CSS class for shadows and outlines
             cellDiv.classList.add('tetromino-block');
   
             // Set the background color dynamically from the tetromino's color
             cellDiv.style.backgroundColor = tetromino.color;
+          }
+        }
+      });
+    });
+  }
+
+  export function drawNextTetromino(tetromino) {
+    const nextBoard = document.getElementById('next-board');
+    const cells = nextBoard.children;
+  
+    // Clear previous preview
+    Array.from(cells).forEach(cell => {
+      cell.style.backgroundColor = '';
+    });
+  
+    // Calculate center position for 4x4 grid
+    const shapeWidth = tetromino.shape[0].length;
+    const shapeHeight = tetromino.shape.length;
+    const startX = Math.floor((4 - shapeWidth) / 2);
+    const startY = Math.floor((4 - shapeHeight) / 2);
+  
+    // Draw new preview
+    tetromino.shape.forEach((row, y) => {
+      row.forEach((cell, x) => {
+        if (cell === 1) {
+          const previewX = startX + x;
+          const previewY = startY + y;
+          const index = previewY * 4 + previewX;
+          if (index >= 0 && index < cells.length) {
+            cells[index].style.backgroundColor = tetromino.color;
           }
         }
       });
@@ -91,6 +86,17 @@ export function drawGameBoard() {
   
         gameBoardElement.appendChild(cell);
       }
+    }
+  }
+
+  export function initNextBoard() {
+    const nextBoard = document.getElementById('next-board');
+    nextBoard.innerHTML = '';
+    
+    for (let i = 0; i < 16; i++) {
+      const cell = document.createElement('div');
+      cell.className = 'next-cell';
+      nextBoard.appendChild(cell);
     }
   }
 

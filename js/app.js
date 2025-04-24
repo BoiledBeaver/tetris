@@ -1,5 +1,5 @@
 import { setBackgroundForLevel, setInitialBackground, preloadBackgrounds } from './background.js';
-import { startGame as startGameBoard, restartGame, moveTetrominoDown, moveTetrominoLeft, moveTetrominoRight, rotateTetromino, drawGameBoard, drawTetromino } from './gameBoard.js';
+import { startGame as startGameBoard, restartGame, moveTetrominoDown, moveTetrominoLeft, moveTetrominoRight, rotateTetromino, drawGameBoard, drawTetromino, drawNextTetromino, initNextBoard } from './gameBoard.js';
 import { handleInputSetup, processInput } from './inputHandler.js';
 import { increaseScore, levelUp, startGame as startScore, stopGame, resetGame } from './score.js';
 import { startTimer, stopTimer, resetTimer } from './timer.js';
@@ -12,6 +12,7 @@ import { createRandomTetromino, toggleColorBlindMode } from './tetromino.js';
 let isPaused = false;
 let isDownPressed = false;
 let activeTetromino = null;
+let nextTetromino = null;
 const dropInterval = 1000;
 const softDropInterval = 50
 let lastDropTime = 0;
@@ -25,6 +26,9 @@ preloadBackgrounds();
 // load background
 window.addEventListener('DOMContentLoaded', () => {
     setInitialBackground();
+    initNextBoard();
+    drawGameBoard();
+    startGameFlow();
   });
 
 // Setup keyboard input listeners
@@ -35,8 +39,6 @@ handleInputSetup(onKeyDown, onKeyUp, (downPressed) => {
 // Start background music
 startBackgroundMusic();
 
-// Start the game flow
-startGameFlow();
 
 //trigger background change for level up.
 function onLevelUp(newLevel) {
@@ -68,7 +70,9 @@ function gameLoop(timestamp) {
       }
   
       if (result === true) {
-        activeTetromino = createRandomTetromino();
+        activeTetromino = nextTetromino;
+        nextTetromino = createRandomTetromino();
+        drawNextTetromino(nextTetromino);
       }
   
       lastDropTime = timestamp;
@@ -84,24 +88,28 @@ function drawGame() {
 function startGameFlow() {
     resetGame();
     resetTimer();
-    activeTetromino = createRandomTetromino();
+    nextTetromino = createRandomTetromino(); 
+    activeTetromino = createRandomTetromino(); 
     startGameBoard(activeTetromino);
     startTimer();
     hidePauseMenu();
     isPaused = false;
     lastDropTime = 0;
+    drawNextTetromino(nextTetromino); 
     requestAnimationFrame(gameLoop);
   }
   
   function restartGameFlow() {
     resetGame();
     resetTimer();
+    nextTetromino = createRandomTetromino();
     activeTetromino = createRandomTetromino();
     restartGame(activeTetromino);
     startTimer();
     hidePauseMenu();
     isPaused = false;
     lastDropTime = 0;
+    drawNextTetromino(nextTetromino);
     requestAnimationFrame(gameLoop);
   }
 
@@ -128,7 +136,7 @@ function onKeyDown(e) {
 }
 
 function onKeyUp(e) {
-  // Optional: handle keyup if needed
+
 }
 
 // Button event listeners
