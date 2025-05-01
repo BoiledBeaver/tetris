@@ -175,7 +175,7 @@ footer {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 280px;
+    width: 500px;
     background: rgba(0, 0, 0, 0.85);
     border-radius: 12px;
     box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6);
@@ -295,7 +295,7 @@ footer {
   #next-container {
     display:grid;
     margin: 40px;
-    margin-top: -483px;
+    margin-top: -470px;
   }
 
   #next-label {
@@ -370,4 +370,70 @@ footer {
   
     /* Smooth transition for color changes */
     transition: background-color 0.3s ease;
+  }
+
+  .menu-screen {
+    position: fixed; 
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 500px;
+    background: rgba(0, 0, 0, 0.85);
+    border-radius: 12px;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6);
+    color: white;
+    font-family: 'Arial', sans-serif;
+    font-size: 18px;
+    padding: 25px 30px;
+    z-index: 50; 
+    user-select: none;
+    text-align: center;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    display: none; /* hidden by default */
+    z-index: 1;
+  }
+  
+  .menu-screen h1 {
+    margin-top: 20px;
+    font-size: 24px;
+    font-weight: bold;
+  }
+  
+  .menu-screen button {
+    background-color: #444;
+    border: none;
+    color: white;
+    padding: 12px 20px;
+    margin: 10px 8px 0 8px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.15s ease;
+    width: 100%;
+    max-width: 200px;
+  }
+  
+  .menu-screen button:hover {
+    background-color: #666;
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.5);
+    transform: scale(1.05);
+  }
+  
+  .menu-screen button:active {
+    transform: scale(0.95);
+  }
+  
+  /* Optional: show/hide animations */
+  .menu-screen.show {
+    display: block;
+    animation: fadeIn 0.3s ease forwards;
+  }
+  
+  .menu-screen.hide {
+    animation: fadeOut 0.3s ease forwards;
+    pointer-events: none;
   }

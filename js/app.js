@@ -1,9 +1,9 @@
 import { setBackgroundForLevel, setInitialBackground, preloadBackgrounds } from './background.js';
 import { getBoard, startGame as startGameBoard, restartGame, moveTetrominoDown, moveTetrominoLeft, moveTetrominoRight, rotateTetromino, getShadowTetromino, drawTetromino, drawGameBoard, drawNextTetromino, initNextBoard } from './gameBoard.js';
 import { handleInputSetup, processInput } from './inputHandler.js';
-import { increaseScore, levelUp, startGame as startScore, stopGame, resetGame } from './score.js';
+import { getTotalLinesCleared, increaseScore, levelUp, startGame as startScore, stopGame, resetGame } from './score.js';
 import { startTimer, stopTimer, resetTimer } from './timer.js';
-import { showPauseMenu, hidePauseMenu } from './pauseMenu.js';
+import { showPauseMenu, hidePauseMenu, showStartScreen, hideStartScreen, showEndScreen, hideEndScreen } from './menus.js';
 import { startBackgroundMusic, stopBackgroundMusic, toggleMute } from './sound.js';
 import { createRandomTetromino, toggleColorBlindMode, normalPalette, colorBlindPalette } from './tetromino.js';
 
@@ -28,7 +28,9 @@ window.addEventListener('DOMContentLoaded', () => {
     setInitialBackground();
     initNextBoard();
     drawGameBoard();
-    startGameFlow();
+
+    showStartScreen();
+    isPaused = true;
   });
 
 // Setup keyboard input listeners
@@ -53,6 +55,24 @@ function gameLoop(timestamp) {
     requestAnimationFrame(gameLoop);
   }
 
+export function switchTetromino() {
+    // Swap active and next tetromino objects
+    const temp = activeTetromino;
+    activeTetromino = nextTetromino;
+    nextTetromino = temp;
+  
+    // Reset active tetromino position and rotation
+    activeTetromino.x = activeTetromino.type === 'I' ? 3 : 4;
+    activeTetromino.y = activeTetromino.type === 'I' ? -1 : 0;
+    activeTetromino.rotationState = 0;
+  
+    // Update next tetromino preview
+    drawNextTetromino(nextTetromino);
+  
+    // Redraw game to reflect changes
+    drawGame();
+  }
+
   function updateGame(timestamp = 0) {
     if (!activeTetromino) return;
     processInput(activeTetromino);
@@ -63,9 +83,14 @@ function gameLoop(timestamp) {
       const result = moveTetrominoDown(activeTetromino);
   
       if (result === 'top-lock') {
-        alert('Game Over!');
         isPaused = true;
         stopTimer();
+
+        const score = document.getElementById('score').textContent.replace('Score: ', '');
+        const level = document.getElementById('level').textContent.replace('Level: ', '');
+        const timer = document.getElementById('timer').textContent.replace('Time: ', '');
+        updateEndScreenStats(score, level, timer);
+        showEndScreen();
         return;
       }
   
@@ -180,4 +205,23 @@ function onKeyUp(e) {
 
 // Button event listeners
 document.getElementById('restartButton').addEventListener('click', restartGameFlow);
+document.getElementById('restartButtonEnd').addEventListener('click', () => {
+    hideEndScreen();
+    restartGameFlow();
+    isPaused = false;
+    requestAnimationFrame(gameLoop);
+  });
+  document.getElementById('startButton').addEventListener('click', () => {
+    hideStartScreen();
+    restartGameFlow();
+    isPaused = false;
+    requestAnimationFrame(gameLoop);
+  });
 document.getElementById('continueButton').addEventListener('click', togglePause);
+
+function updateEndScreenStats(score, level, timer) {
+    document.getElementById('finalScore').textContent = `Final Score: ${score}`;
+    document.getElementById('finalLevel').textContent = `Final Level: ${level}`;
+    document.getElementById('finalLines').textContent = `Total Lines: ${getTotalLinesCleared()}`;
+    document.getElementById('finalTimer').textContent = `Time Played: ${timer}`;
+  }

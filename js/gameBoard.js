@@ -186,17 +186,70 @@ export function hardDropTetromino(tetromino) {
     return true;
   }
 
-export function rotateTetromino(tetromino) {
-  // Rotate shape matrix clockwise
-  const rotatedShape = tetromino.shape[0].map((_, index) =>
-    tetromino.shape.map(row => row[index]).reverse()
-  );
+
+  const WALL_KICKS = {
+    'I': [
+      [[0,0], [-2,0], [1,0], [-2,-1], [1,2]],
+      [[0,0], [-1,0], [2,0], [-1,2], [2,-1]],
+      [[0,0], [2,0], [-1,0], [2,1], [-1,-2]],
+      [[0,0], [1,0], [-2,0], [1,-2], [-2,1]]
+    ],
+    'default': [
+      [[0,0], [-1,0], [-1,1], [0,-2], [-1,-2]],
+      [[0,0], [1,0], [1,-1], [0,2], [1,2]],
+      [[0,0], [1,0], [1,1], [0,-2], [1,-2]],
+      [[0,0], [-1,0], [-1,-1], [0,2], [-1,2]]
+    ]
+  };
   
-  // Check collision for rotated shape
-  if (!checkForCollision({ ...tetromino, shape: rotatedShape }, board, 0, 0)) {
-    tetromino.shape = rotatedShape;
+  export function rotateTetromino(tetromino, direction = 'CW') {
+    if (tetromino.type === 'O') {
+        return false; // No rotation needed
+      }
+    const originalShape = tetromino.shape;
+    const newRotationState = (tetromino.rotationState + (direction === 'CW' ? 1 : 3)) % 4;
+    
+    // Rotate the matrix
+    const rotatedShape = rotateMatrix(originalShape, direction);
+  
+    // Select kick table based on type and current rotation state
+    const kickTable = tetromino.type === 'I' 
+      ? WALL_KICKS.I[tetromino.rotationState] 
+      : WALL_KICKS.default[tetromino.rotationState];
+  
+    for (const [xOffset, yOffset] of kickTable) {
+      if (!checkForCollision(
+        { ...tetromino, shape: rotatedShape },
+        board,
+        xOffset,
+        yOffset
+      )) {
+        // Apply rotation and kick offset
+        tetromino.shape = rotatedShape;
+        tetromino.x += xOffset;
+        tetromino.y += yOffset;
+        tetromino.rotationState = newRotationState;
+        return true;
+      }
+    }
+    return false;
   }
-}
+  
+  function rotateMatrix(matrix, direction) {
+    const N = matrix.length;
+    const result = Array(N).fill().map(() => Array(N).fill(0));
+    
+    for (let y = 0; y < N; y++) {
+      for (let x = 0; x < N; x++) {
+        if (direction === 'CW') {
+          result[x][N-1-y] = matrix[y][x];
+        } else {
+          result[N-1-x][y] = matrix[y][x];
+        }
+      }
+    }
+    return result;
+  }
 
 // Helper: place tetromino blocks on board array
 function placeTetromino(tetromino) {

@@ -16,11 +16,33 @@
     <div id="game-container">
       <div id="game-board" class="game-grid"></div>
   
-      <div id="pauseMenu" style="display:none;">
-        <button id="continueButton">Continue</button>
-        <button id="restartButton">Restart</button>
-        <button id="muteButton">Mute</button>
-      </div>
+<!-- Pause Screen -->
+<div id="pauseMenu" class="menu-screen" style="display:none;">
+    <button id="continueButton">Continue</button>
+    <button id="restartButton">Restart</button>
+    <h1>How to play?</h1>
+    <img id="startImage" src="images/keybinds.png" alt="Start Screen Image" style="max-width: 80%; margin-bottom: 20px;" />
+
+  </div>
+  
+  <!-- Start Screen -->
+  <div id="startScreen" class="menu-screen" style="display:none;">
+    <button id="startButton">Play</button>
+    <h1>How to play?</h1>
+    <img id="startImage" src="images/keybinds.png" alt="Start Screen Image" style="max-width: 80%; margin-bottom: 20px;" />
+
+  </div>
+  
+  <!-- End Screen -->
+  <div id="endScreen" class="menu-screen" style="display:none;">
+    <h1>Game Over</h1>
+    <p id="finalScore">Final Score: 0</p>
+    <p id="finalLevel">Final Levels: 1</p>
+    <p id="finalLines">Total Lines: 0</p>
+    <p id="finalTimer">Time Played: 00:00</p>
+    <button id="restartButtonEnd">Restart</button>
+  </div>
+  
   
       <div id="colorBlindToggleContainer">
         <label class="colorblind-switch">
@@ -43,30 +65,27 @@
     <div id="scoreboard-panel">
       <p id="score">Score: 0</p>
       <p id="level">Level: 1</p>
+      <p id="linesCleared">Lines: 0</p>
       <p id="timer">Time: 00:00</p>
+      <p>Combo: <span id="comboMultiplier">1×</span></p>
     </div>
 
     <div id="to-do">
         <h1>To-Do</h1>
         <p id="text">
             <ul>
-                <li>Speed scale with lvl </li>
-                <li>Change rotation logic of long boi</li>
+                <li>lvl scaling threshold </li>
+                <li>Speed increase with lvl </li>
                 <li>Sound to proper function</li>
                 <li>Highscore</li>
-                <li>Instruction</li>
-                <li>Restart button on page (not just in menu)</li>
-                <li>Kickback from wall </li>
-                <li>Proper Game-over Screen </li>
-                <li>Proper start Screen </li>
                 <li>Clear line animation </li>
+                <li>Fix tetris-header</li>
             </ul>
-
         </p>
 
       </div>
     </main>
-    <footer> <b>IMPORTANT,  NOT FINAL</b> || PREVIEW ONLY - Alpha v.0.3 </footer>
+    <footer> <b>IMPORTANT,  NOT FINAL</b> || PREVIEW ONLY - Alpha v.0.6 </footer>
   <script type="module" src="js/app.js"></script>
 </body>
 </html>
