@@ -1,7 +1,7 @@
 import { setBackgroundForLevel, setInitialBackground, preloadBackgrounds } from './background.js';
 import { getBoard, startGame as startGameBoard, restartGame, moveTetrominoDown, moveTetrominoLeft, moveTetrominoRight, rotateTetromino, getShadowTetromino, drawTetromino, drawGameBoard, drawNextTetromino, initNextBoard } from './gameBoard.js';
 import { handleInputSetup, processInput } from './inputHandler.js';
-import { getTotalLinesCleared, increaseScore, levelUp, startGame as startScore, stopGame, resetGame } from './score.js';
+import { getTotalLinesCleared, increaseScore, levelUp, startGame as startScore, stopGame, resetGame, getCurrentLevel } from './score.js';
 import { startTimer, stopTimer, resetTimer } from './timer.js';
 import { showPauseMenu, hidePauseMenu, showStartScreen, hideStartScreen, showEndScreen, hideEndScreen } from './menus.js';
 import { startBackgroundMusic, stopBackgroundMusic, toggleMute } from './sound.js';
@@ -13,14 +13,24 @@ let isPaused = false;
 let isDownPressed = false;
 let activeTetromino = null;
 let nextTetromino = null;
-const dropInterval = 1000;
-const softDropInterval = 50
+const BASE_DROP_INTERVAL = 1000; 
+const SOFT_DROP_INTERVAL = 50;   
+const DROP_DECAY_FACTOR = 0.90;  
+const MIN_DROP_INTERVAL = 100;   
+
 let lastDropTime = 0;
 
+function getDropInterval(level) {
+    const calculatedInterval = BASE_DROP_INTERVAL * Math.pow(DROP_DECAY_FACTOR, level - 1);
+    return Math.max(calculatedInterval, MIN_DROP_INTERVAL);
+  }
+  
+  // Initialize game board UI
+  drawGameBoard();
+  preloadBackgrounds();  
 
 // Initialize game board UI
 drawGameBoard();
-
 preloadBackgrounds();
 
 // load background
@@ -28,7 +38,6 @@ window.addEventListener('DOMContentLoaded', () => {
     setInitialBackground();
     initNextBoard();
     drawGameBoard();
-
     showStartScreen();
     isPaused = true;
   });
@@ -77,7 +86,9 @@ export function switchTetromino() {
     if (!activeTetromino) return;
     processInput(activeTetromino);
   
-    const interval = isDownPressed ? softDropInterval : dropInterval;
+    // Get current level and calculate drop interval
+    const currentLevel = getCurrentLevel();
+    const interval = isDownPressed ? SOFT_DROP_INTERVAL : getDropInterval(currentLevel);
   
     if (timestamp - lastDropTime > interval) {
       const result = moveTetrominoDown(activeTetromino);
@@ -85,7 +96,7 @@ export function switchTetromino() {
       if (result === 'top-lock') {
         isPaused = true;
         stopTimer();
-
+  
         const score = document.getElementById('score').textContent.replace('Score: ', '');
         const level = document.getElementById('level').textContent.replace('Level: ', '');
         const timer = document.getElementById('timer').textContent.replace('Time: ', '');

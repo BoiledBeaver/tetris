@@ -22,6 +22,12 @@ export function setBackgroundForLevel(level) {
     document.body.style.backgroundPosition = 'center';
     document.body.style.backgroundRepeat = 'no-repeat';
     
+    if (index === TOTAL_BACKGROUNDS - 1) {
+        document.body.classList.add('no-blur');
+      } else {
+        document.body.classList.remove('no-blur');
+      }
+
     // Preload image for future use
     const img = new Image();
     img.src = imageUrl;

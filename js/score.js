@@ -30,13 +30,13 @@ function updateScoreboard() {
 // Handle leveling up with exponential threshold increase
 function levelUp() {
   currentLevel++;
-  nextLevelThreshold = Math.floor(nextLevelThreshold * 1.8);
+  nextLevelThreshold = Math.floor(nextLevelThreshold * 1.55);
   setBackgroundForLevel(currentLevel);
   updateScoreboard();
 }
 
 let comboTimeoutId = null;
-const COMBO_TIMEOUT_MS = 5000; // 5 seconds to continue combo
+const COMBO_TIMEOUT_MS = 6000; 
 const MAX_COMBO_MULTIPLIER = 4;
 
 
@@ -123,6 +123,10 @@ function resetGame() {
 function getTotalLinesCleared() {
   return totalLinesCleared;
 }
+
+export function getCurrentLevel() {
+    return currentLevel;
+  }
 
 export {
   increaseScore,
