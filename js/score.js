@@ -51,7 +51,7 @@ function increaseScore(linesClearedCount) {
       case 2: basePoints = 300; doubles++; break;
       case 3: basePoints = 500; triples++; break;
       case 4: basePoints = 800; tetrises++; break;
-      default: basePoints = 100 * linesClearedCount; // fallback
+      default: basePoints = 100 * linesClearedCount;
     }
   
     // Calculate points with level and combo multipliers
@@ -78,7 +78,6 @@ function increaseScore(linesClearedCount) {
     updateScoreboard();
   }
 
-// Call this when a piece locks in place, passing how many lines it cleared
 function onPieceLocked(linesClearedCount) {
     if (linesClearedCount === 0) {
       comboMultiplier = 1;
