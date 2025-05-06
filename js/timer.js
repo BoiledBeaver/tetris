@@ -2,7 +2,7 @@ let timer = 0;
 let intervalId = null;
 
 export function startTimer() {
-  if (intervalId) return; // prevent multiple intervals
+  if (intervalId) return;
   intervalId = setInterval(() => {
     timer++;
     updateTimerDisplay();
