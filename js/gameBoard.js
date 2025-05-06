@@ -40,7 +40,6 @@ export function drawTetromino(tetromino, isShadow = false) {
   function hexToRGBA(hex, alpha) {
     let r = 0, g = 0, b = 0;
   
-    // Remove '#' if present
     if (hex[0] === '#') hex = hex.slice(1);
   
     if (hex.length === 3) {
@@ -95,7 +94,7 @@ export function drawGameBoard() {
         const cell = document.createElement('div');
         cell.classList.add('game-cell');
   
-        // Clear any tetromino-block class and background color (in case reused)
+        // Clear any tetromino-block class and background color
         cell.classList.remove('tetromino-block');
         cell.style.backgroundColor = '';
   
@@ -158,7 +157,7 @@ export function moveTetrominoDown(tetromino) {
   
       placeTetromino(tetromino);
       clearFullLines(board);
-      return true; // locked
+      return true;
     }
   }
 
@@ -175,7 +174,6 @@ export function moveTetrominoRight(tetromino) {
 }
 
 export function hardDropTetromino(tetromino) {
-    // Move tetromino down until collision occurs
     while (!checkForCollision(tetromino, board, 0, 1)) {
       tetromino.y += 1;
     }
@@ -204,7 +202,7 @@ export function hardDropTetromino(tetromino) {
   
   export function rotateTetromino(tetromino, direction = 'CW') {
     if (tetromino.type === 'O') {
-        return false; // No rotation needed
+        return false; // do not rotate "o" piece
       }
     const originalShape = tetromino.shape;
     const newRotationState = (tetromino.rotationState + (direction === 'CW' ? 1 : 3)) % 4;
@@ -251,7 +249,6 @@ export function hardDropTetromino(tetromino) {
     return result;
   }
 
-// Helper: place tetromino blocks on board array
 function placeTetromino(tetromino) {
   tetromino.shape.forEach((row, y) => {
     row.forEach((cell, x) => {
@@ -267,7 +264,6 @@ function placeTetromino(tetromino) {
 }
 
 function getTetrominoColor(cellValue) {
-  // cellValue is color string in this setup
   return cellValue;
 }
 
