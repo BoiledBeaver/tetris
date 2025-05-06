@@ -9,7 +9,6 @@ const sounds = {
     if (sounds[name]) {
       sounds[name].currentTime = 0;
       sounds[name].play().catch((error) => {
-        // Autoplay prevented or other error
         console.warn(`Audio playback failed: ${error.message}`);
       });
     }
