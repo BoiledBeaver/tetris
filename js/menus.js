@@ -1,6 +1,6 @@
 function showMenuScreen(id) {
   const el = document.getElementById(id);
-  el.style.display = 'flex'; // or 'block' depending on your CSS
+  el.style.display = 'flex';
   el.classList.remove('hide');
   el.classList.add('show');
 }
