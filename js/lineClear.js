@@ -1,4 +1,5 @@
 import { increaseScore } from './score.js';
+import { playSound } from './sound.js';
 
 export function clearFullLines(board) {
     let linesCleared = 0;
@@ -11,6 +12,9 @@ export function clearFullLines(board) {
         y++; 
       }
     }
-  
+    if (linesCleared > 0) {
+      playSound('lineClear');
+    }
+    
     increaseScore(linesCleared);
   }

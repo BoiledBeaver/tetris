@@ -4,7 +4,7 @@ import { handleInputSetup, processHeldKeys, processInput, setInputMode, getInput
 import { getTotalLinesCleared, increaseScore, levelUp, startGame as startScore, stopGame, resetGame, getCurrentLevel } from './score.js';
 import { startTimer, stopTimer, resetTimer } from './timer.js';
 import { showPauseMenu, hidePauseMenu, showStartScreen, hideStartScreen, showEndScreen, hideEndScreen } from './menus.js';
-import { startBackgroundMusic, stopBackgroundMusic, toggleMute } from './sound.js';
+import { playSound, startBackgroundMusic, stopBackgroundMusic, pauseBackgroundMusic, resumeBackgroundMusic } from './sound.js';
 import { createRandomTetromino, toggleColorBlindMode, normalPalette, colorBlindPalette } from './tetromino.js';
 
 // Game state
@@ -18,6 +18,17 @@ const DROP_DECAY_FACTOR = 0.90;
 const MIN_DROP_INTERVAL = 100;   
 
 let lastDropTime = 0;
+
+function getHighscore() {
+  return parseInt(localStorage.getItem('tetrisHighscore')) || 0;
+}
+
+function updateHighscore(score) {
+  const currentHighscore = getHighscore();
+  if (score > currentHighscore) {
+    localStorage.setItem('tetrisHighscore', score);
+  }
+}
 
 function getDropInterval(level) {
   const calculatedInterval = BASE_DROP_INTERVAL * Math.pow(DROP_DECAY_FACTOR, level - 1);
@@ -52,9 +63,6 @@ window.addEventListener('DOMContentLoaded', () => {
 handleInputSetup(onKeyDown, onKeyUp, (downPressed) => {
   isDownPressed = downPressed;
 });
-
-// Start background music
-startBackgroundMusic();
 
 // Trigger background change for level up.
 function onLevelUp(newLevel) {
@@ -103,6 +111,9 @@ function updateGame(timestamp = 0) {
     if (result === 'top-lock') {
       isPaused = true;
       stopTimer();
+
+      stopBackgroundMusic();
+      playSound('gameOver');
 
       const score = document.getElementById('score').textContent.replace('Score: ', '');
       const level = document.getElementById('level').textContent.replace('Level: ', '');
@@ -165,6 +176,7 @@ document.getElementById('colorBlindToggle').addEventListener('click', () => {
 function startGameFlow() {
   resetGame();
   resetTimer();
+  startBackgroundMusic();
   nextTetromino = createRandomTetromino(); 
   activeTetromino = createRandomTetromino(); 
   startGameBoard(activeTetromino);
@@ -179,6 +191,7 @@ function startGameFlow() {
 function restartGameFlow() {
   resetGame();
   resetTimer();
+  startBackgroundMusic();
   nextTetromino = createRandomTetromino();
   activeTetromino = createRandomTetromino();
   restartGame(activeTetromino);
@@ -195,11 +208,13 @@ function togglePause() {
     isPaused = false;
     hidePauseMenu();
     startTimer();
+    resumeBackgroundMusic();
     requestAnimationFrame(gameLoop);
   } else {
     isPaused = true;
     showPauseMenu();
     stopTimer();
+    pauseBackgroundMusic();
   }
 }
 
@@ -242,4 +257,5 @@ function updateEndScreenStats(score, level, timer) {
   document.getElementById('finalLevel').textContent = `Final Level: ${level}`;
   document.getElementById('finalLines').textContent = `Total Lines: ${getTotalLinesCleared()}`;
   document.getElementById('finalTimer').textContent = `Time Played: ${timer}`;
+//  document.getElementById('finalHighscore').textContent = `Highscore: ${getHighscore()}`;
 }

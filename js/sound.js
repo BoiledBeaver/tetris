@@ -1,9 +1,11 @@
 const sounds = {
     lineClear: new Audio('sounds/line-clear.mp3'),
-    tetrominoMove: new Audio('sounds/tetromino-move.mp3'),
     gameOver: new Audio('sounds/game-over.mp3'),
     backgroundMusic: new Audio('sounds/background.mp3'),
   };
+
+  sounds.backgroundMusic.volume = 0.4;
+
   
   export function playSound(name) {
     if (sounds[name]) {
@@ -22,6 +24,16 @@ const sounds = {
       });
     }
   
+    export function pauseBackgroundMusic() {
+      sounds.backgroundMusic.pause();
+    }
+    
+    export function resumeBackgroundMusic() {
+      sounds.backgroundMusic.play().catch((error) => {
+        console.warn(`Background music playback failed: ${error.message}`);
+      });
+    }
+
   export function stopBackgroundMusic() {
     sounds.backgroundMusic.pause();
     sounds.backgroundMusic.currentTime = 0;
